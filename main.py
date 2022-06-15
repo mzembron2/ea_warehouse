@@ -10,5 +10,5 @@ st.config.dataFrameSerialization = "arrow"
 
 if __name__ == "__main__":
     # main()
-    cos = Gui()
-    cos.main()
+    gui = Gui()
+    gui.main()
