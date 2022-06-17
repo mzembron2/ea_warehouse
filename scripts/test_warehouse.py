@@ -1,12 +1,15 @@
 from warehouse import Warehouse
 from evaluator import Evaluator
-import numpy as np
+import os
 
 ######## script with unit tests  - run `pytest` in terminal (in scripts directory)
 
+DIRNAME = os.path.dirname(__file__)
+FILENAME_BLOCKS_TEST = os.path.join(DIRNAME, '../data/blocks_test.csv')
+
 def test_add_remove_block():
     wh = Warehouse(4,7)
-    wh.get_blocks_from_csv("blocks_test.csv")
+    wh.get_blocks_from_csv(FILENAME_BLOCKS_TEST)
     blocks_number = len(wh.blocks_dict)
     TEST_BLOCK_INDEX = 0
     TEST_BLOCK_X_SIZE = wh.blocks_dict[0].x_length
@@ -26,7 +29,7 @@ def test_add_remove_block():
 
 def test_evaluate_warehouse():
     wh = Warehouse(14,7)
-    wh.get_blocks_from_csv("blocks_test.csv")
+    wh.get_blocks_from_csv(FILENAME_BLOCKS_TEST)
     
     wh.place_block(0,11,4)
     wh.place_block(1, 11, 3 )

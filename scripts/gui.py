@@ -2,12 +2,14 @@ from re import X
 import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
-import time
+import os
 import random
+
+DIRNAME = os.path.dirname(__file__)
+FILENAME_BLOCKS = os.path.join(DIRNAME, '../data/blocks.csv')
 
 class Gui():
     def __init__(self):
-        # self.blocks = pd.read_csv("blocks.csv")
         self.color_list = ["Red", "Green", "Blue", "Yellow", "RoyalBlue", "LightSkyBlue"]
         self.blocks = self.load_data()
 
@@ -28,11 +30,11 @@ class Gui():
         self.save_blocks()
 
     def load_data(self):
-        blocks = pd.read_csv("blocks.csv")
+        blocks = pd.read_csv(FILENAME_BLOCKS)
         return blocks 
     
     def save_blocks(self):
-        self.blocks.to_csv("blocks.csv", index = False)
+        self.blocks.to_csv(FILENAME_BLOCKS, index = False)
 
     def prepare_fig(self):
         self.fig = go.Figure()

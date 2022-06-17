@@ -12,5 +12,5 @@ class EvolutionaryAlgotihm():
         if(len(self.warehouse.blocks_in_warehouse) == 0):
             self.warehouse.place_random_block()
         else:
-            """ Rnadom: place, remove or exchange """
+            """ Randomly: place, remove or exchange """
             pass
