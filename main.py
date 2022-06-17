@@ -7,8 +7,6 @@ from gui import Gui
 
 
 st.config.dataFrameSerialization = "arrow"
-
 if __name__ == "__main__":
-    # main()
     gui = Gui()
     gui.main()

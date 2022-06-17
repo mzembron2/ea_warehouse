@@ -7,8 +7,9 @@ import random
 
 class Gui():
     def __init__(self):
-        self.blocks = pd.read_csv("blocks.csv")
+        # self.blocks = pd.read_csv("blocks.csv")
         self.color_list = ["Red", "Green", "Blue", "Yellow", "RoyalBlue", "LightSkyBlue"]
+        self.blocks = self.load_data()
 
     # @staticmethod
     def button_callback(self):
@@ -25,7 +26,7 @@ class Gui():
         st.plotly_chart(self.fig)
         st.write(self.blocks.shape[0])
         self.save_blocks()
-    @st.cache
+
     def load_data(self):
         blocks = pd.read_csv("blocks.csv")
         return blocks 
@@ -46,7 +47,7 @@ class Gui():
         self.y_origin_input = st.text_input("y_origin")
         self.y_length_input = st.text_input("y_length")
         self.button = st.button('Insert new block', on_click=self.button_callback)
-
+    
     def add_elements(self):
         for row in self.blocks.iterrows():
             self.fig.add_shape(type="rect",
@@ -55,11 +56,11 @@ class Gui():
                 fillcolor=self.color_list[random.randint(0, len(self.color_list)-1)],
             )
         self.fig.update_shapes(dict(xref='x', yref='y'))
-
+    
     def main(self):
         self.prepare_fig()
         self.prepare_widgets()
         # Add shapes
         self.add_elements()
-        st.plotly_chart(self.fig)
+        self.chart = st.plotly_chart(self.fig)
 
