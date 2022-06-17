@@ -37,6 +37,13 @@ class Warehouse():
             y_origin:y_origin + y_len] = FREE_CELL_VALUE
         self.blocks_dict[index].set_position(None, None)
 
+    def is_spot_available(self, x, y, x_len, y_len):
+        indexes = np.unique(self.warehouse_matrix[x:x+x_len,y:y+y_len])
+        if(indexes.size>1 or indexes[0] != FREE_CELL_VALUE):
+            return False
+        else:
+            return True
+
     def get_matrix(self):
         return self.warehouse_matrix
 
