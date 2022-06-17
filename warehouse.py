@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 from block import Block
+import random
+import copy
 
 FREE_CELL_VALUE = -1
 
@@ -12,11 +14,14 @@ class Warehouse():
         """
         self.warehouse_matrix = np.full((rows, columns), FREE_CELL_VALUE,dtype=int)
         self.blocks_dict = {}
+        self.blocks_in_warehouse = []
+        self.blocks_in_waiting_list = []
 
     def get_blocks_from_csv(self, file_name):
         blocks = pd.read_csv(file_name)
         for index, row in blocks.iterrows():
             self.blocks_dict[index] = Block(int(row['x_length']), int(row['y_length']))
+            self.blocks_in_waiting_list.append(index)
 
     def place_block(self, index, x_origin, y_origin):
         current_block = self.blocks_dict[index]
@@ -24,10 +29,13 @@ class Warehouse():
             y_origin:y_origin + current_block.y_length] = index
 
         self.blocks_dict[index].set_position(x_origin, y_origin)
+        self.blocks_in_waiting_list.remove(index)
+        self.blocks_in_warehouse.append(index)
 
     def remove_block(self, index):
         current_block = self.blocks_dict[index]
         assert(current_block.is_position_set())
+
         x_origin = current_block.x_origin
         y_origin = current_block.y_origin
         x_len = current_block.x_length
@@ -36,16 +44,79 @@ class Warehouse():
         self.warehouse_matrix[x_origin:x_origin + x_len,
             y_origin:y_origin + y_len] = FREE_CELL_VALUE
         self.blocks_dict[index].set_position(None, None)
+        self.blocks_in_warehouse.remove(index)
+        self.blocks_in_waiting_list.append(index)
 
     def is_spot_available(self, x, y, x_len, y_len):
         indexes = np.unique(self.warehouse_matrix[x:x+x_len,y:y+y_len])
-        if(indexes.size>1 or indexes[0] != FREE_CELL_VALUE):
+        max_x = self.warehouse_matrix.shape[0] - 1
+        max_y = self.warehouse_matrix.shape[1] - 1
+        
+        if(indexes.size == 0):
             return False
+
+        elif(indexes.size>1 or indexes[0] != FREE_CELL_VALUE 
+            or x + x_len - 1> max_x or y + y_len - 1 > max_y
+            or x < 0 or y < 0):
+            return False
+
         else:
             return True
 
-    def get_matrix(self):
-        return self.warehouse_matrix
+    def get_available_spots(self, index):
+        current_block = self.blocks_dict[index]
+        x_len = current_block.x_length
+        y_len = current_block.y_length
+
+        available_spots = []
+        for x in range(self.warehouse_matrix.shape[0] - x_len + 1):
+            for y in range(self.warehouse_matrix.shape[1] - y_len + 1):
+                if(self.is_spot_available(x, y, x_len, y_len)):
+                    available_spots.append((x,y))
+
+        return available_spots
+    
+    def place_random_block(self):
+        placed = False
+        available_blocks = copy.deepcopy(self.blocks_in_waiting_list)
+
+        while(not placed):
+            if(len(available_blocks) == 0):
+                    return False
+
+            random_block_index = random.choice(available_blocks)
+            available_blocks.remove(random_block_index)
+            available_spots = self.get_available_spots(random_block_index)
+
+            if(len(available_spots) == 0):
+                continue
+            
+            first_available_x = available_spots[0][0]
+            first_available_y = available_spots[0][1]
+            self.place_block(random_block_index, first_available_x, first_available_y)
+            placed = True
+            return True 
+
+    def remove_random_block(self):
+        if(len(self.blocks_in_warehouse) == 0):
+            return False
+        else:
+            random_block_index = random.choice(self.blocks_in_warehouse)
+            self.remove_block(random_block_index)
+    
+    # def has_access_to_path(self, block_index):
+    #     current_block = self.blocks_dict[block_index]
+    #     assert(current_block.is_position_set())
+    #     x_origin = current_block.x_origin
+    #     y_origin = current_block.y_origin
+    #     x_len = current_block.x_length
+    #     y_len = current_block.y_length
+
+    #     '''Path above block'''
+    #     if(self.is_spot_available(x_origin ))
+
+        
+
 
     
 
