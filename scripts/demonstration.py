@@ -53,6 +53,9 @@ if(__name__ == "__main__"):
     print(ea.current_population[1].warehouse_matrix)
     print(ea.crossover(0,1).warehouse_matrix)
 
+
+    ea.tournament_selection(2)
+
     """ demonstartion of evaluator """
     # wh.place_block(0,11,4)
     # wh.place_block(1, 11, 3 )

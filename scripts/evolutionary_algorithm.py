@@ -105,7 +105,18 @@ class EvolutionaryAlgotihm():
 
         return child
 
+    def evaluate_function(self, wh):
+        
+        # wh = self.current_population[warehouse_index].warehouse_matrix
+
+        count_blocks_area = np.count_nonzero(wh >= 0)
+        count_warehouse_size = wh.size - np.count_nonzero(wh == -2)
+
+        return count_warehouse_size-count_blocks_area
 
 
-
+    def tournament_selection(self, number_of_blocks_to_pick):
+        probability_distribution= [self.evaluate_function(x.warehouse_matrix) for x in self.current_population]
+        draw = np.random.choice(self.current_population, number_of_blocks_to_pick, probability_distribution)
+        print(draw)
 
