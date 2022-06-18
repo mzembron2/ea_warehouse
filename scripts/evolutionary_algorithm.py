@@ -1,25 +1,31 @@
-import pandas as pd
+from warehouse import Warehouse 
 import numpy as np
 import random
-from warehouse import Warehouse 
+import copy
 import os
-FREE_CELL_VALUE = -1
 
+FREE_CELL_VALUE = -1
 DIRNAME = os.path.dirname(__file__)
 FILENAME_BLOCKS = os.path.join(DIRNAME, '../data/blocks.csv')
+
 class EvolutionaryAlgotihm():
     
-    def __init__(self):
+    def __init__(self, population_size = 4):
         self.warehouse = Warehouse(4,7)
         self.warehouse.get_blocks_from_csv(FILENAME_BLOCKS)
+        self.population_size = population_size
+        self.generate_population()
     
+    def generate_population(self):
+        self.current_population = [copy.deepcopy(self.warehouse)
+             for i in range(self.population_size) ]
+
+
     def mutation(self):
         if(len(self.warehouse.blocks_in_warehouse) == 0):
             self.warehouse.place_random_block()
         else:
-            """ Randomly: place, remove or exchange """
-            pass
-
+            self.warehouse.random_operation()
 
     def create_crossover_border(self):
         #TO DO po zmianie 
@@ -46,12 +52,11 @@ class EvolutionaryAlgotihm():
                     uniq_right = uniq_right[uniq_right!=u_l]
             return right_warehouse, uniq_right
 
-    def crossover(self):
+    def crossover(self, first_warehouse_index, second_warehouse_index):
 
         #TO DO po zmianie 
-        first_warehouse = Warehouse(4,7).warehouse_matrix
-        second_warehouse = Warehouse(4,7).warehouse_matrix
-
+        first_warehouse = self.current_population[first_warehouse_index]
+        second_warehouse = self.current_population[second_warehouse_index]
 
         border = self.create_crossover_border()
         left_warehouse, uniq_left = self.delete_divided_blocks(first_warehouse, border, 'left')
