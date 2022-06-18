@@ -45,10 +45,10 @@ def test_evaluate_warehouse():
 
     eval = Evaluator(wh)
 
-    assert(eval.path_above_block(x_origin, y_origin, y_len))
-    assert( not eval.path_below_block(x_end, y_origin, y_len))
-    assert( not eval.path_on_left_from_block(x_origin, y_origin, x_len))
-    assert( not eval.path_on_right_from_block(x_origin, y_end, x_len))
+    assert(eval.is_space_above_block(x_origin, y_origin, y_len))
+    assert( not eval.is_space_below_block(x_end, y_origin, y_len))
+    assert( not eval.is_space_on_left_from_block(x_origin, y_origin, x_len))
+    assert( not eval.is_space_on_right_from_block(x_origin, y_end, x_len))
     assert(eval.has_access_to_path(0))
 
 
