@@ -28,7 +28,6 @@ class EvolutionaryAlgotihm():
             self.current_population[block_index].random_operation()
 
     def create_crossover_border(self):
-        #TO DO po zmianie 
         return random.randint(0, self.warehouse.warehouse_matrix.shape[1])
 
     def delete_divided_blocks(self, some_warehoue, border, side):
@@ -54,7 +53,6 @@ class EvolutionaryAlgotihm():
 
     def crossover(self, first_warehouse_index, second_warehouse_index):
 
-        #TO DO po zmianie 
         first_warehouse = self.current_population[first_warehouse_index].warehouse_matrix
         second_warehouse = self.current_population[second_warehouse_index].warehouse_matrix
 
@@ -62,6 +60,7 @@ class EvolutionaryAlgotihm():
         left_warehouse, uniq_left = self.delete_divided_blocks(first_warehouse, border, 'left')
         right_warehouse, uniq_right = self.delete_divided_blocks(second_warehouse, border, 'right')
 
+        print(border)
         for u_l in uniq_left:
             if u_l in uniq_right:
                 if(random.choice([True, False])):
@@ -71,7 +70,6 @@ class EvolutionaryAlgotihm():
                     left_warehouse.remove_block(u_l)
                     uniq_left = uniq_left[uniq_left!=u_l]
         
-        #TO DO po zmianie 
         warehouse_to_return = np.full(self.warehouse.warehouse_matrix.shape, FREE_CELL_VALUE,dtype=int)
         warehouse_to_return[:][:border] =  left_warehouse
         warehouse_to_return[:][border:] = right_warehouse
@@ -79,4 +77,18 @@ class EvolutionaryAlgotihm():
 
 
 
+    def evaluate_function(self, wh):
+        
+        # wh = self.current_population[warehouse_index].warehouse_matrix
+
+        count_blocks_area = np.count_nonzero(wh >= 0)
+        count_warehouse_size = wh.size - np.count_nonzero(wh == -2)
+
+        return count_warehouse_size-count_blocks_area
+
+
+    def tournament_selection(self, number_of_blocks_to_pick):
+        probability_distribution= [self.evaluate_function(x.warehouse_matrix) for x in self.current_population]
+        draw = np.random.choice(self.current_population, number_of_blocks_to_pick, probability_distribution)
+        print(draw)
 
