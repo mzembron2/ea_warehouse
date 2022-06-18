@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from scipy import rand
 from block import Block
 import random
 import copy
@@ -76,7 +77,7 @@ class Warehouse():
 
         return available_spots
     
-    def place_random_block(self):
+    def place_random_block(self) -> bool:
         placed = False
         available_blocks = copy.deepcopy(self.blocks_in_waiting_list)
 
@@ -91,30 +92,30 @@ class Warehouse():
             if(len(available_spots) == 0):
                 continue
             
-            first_available_x = available_spots[0][0]
-            first_available_y = available_spots[0][1]
-            self.place_block(random_block_index, first_available_x, first_available_y)
+            random_spot = random.choice(available_spots)
+            self.place_block(random_block_index, random_spot[0], random_spot[1])
             placed = True
             return True 
 
-    def remove_random_block(self):
+    def remove_random_block(self) -> bool:
         if(len(self.blocks_in_warehouse) == 0):
             return False
         else:
             random_block_index = random.choice(self.blocks_in_warehouse)
             self.remove_block(random_block_index)
+            return True
+
+    def random_operation(self):
+        operations = [self.remove_random_block, self.place_random_block]
+        output = False
+        while(not output):
+            random_operation = random.choice(operations)
+            operations.remove(random_operation)
+            output = random_operation()
+
+
+            
     
-    # def has_access_to_path(self, block_index):
-    #     current_block = self.blocks_dict[block_index]
-    #     assert(current_block.is_position_set())
-    #     x_origin = current_block.x_origin
-    #     y_origin = current_block.y_origin
-    #     x_len = current_block.x_length
-    #     y_len = current_block.y_length
-
-    #     '''Path above block'''
-    #     if(self.is_spot_available(x_origin ))
-
         
 
 
