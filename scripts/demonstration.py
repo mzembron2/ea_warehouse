@@ -49,12 +49,16 @@ if(__name__ == "__main__"):
     ea.current_population[1].place_block(1,2,8)
     ea.current_population[1].place_block(2,3,15) 
 
-    print(ea.current_population[0].warehouse_matrix)
-    print(ea.current_population[1].warehouse_matrix)
-    print(ea.crossover(0,1).warehouse_matrix)
+
+    wh1 = ea.current_population[0]
+    wh2 = ea.current_population[1]
+    print(wh1.warehouse_matrix)
+    print(wh2.warehouse_matrix)
+    print(ea.crossover(wh1,wh2).warehouse_matrix)
 
 
     ea.tournament_selection(2)
+    ea.run()
 
     """ demonstartion of evaluator """
     # wh.place_block(0,11,4)

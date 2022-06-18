@@ -57,11 +57,11 @@ class EvolutionaryAlgotihm():
                 # uniq_right = uniq_right[uniq_right!=u_l]
             # return some_warehouse, uniq_right
             return some_warehouse
-    def crossover(self, first_warehouse_index, second_warehouse_index) -> Warehouse:
+    def crossover(self, first_warehouse, second_warehouse) -> Warehouse:
 
         #TO DO po zmianie 
-        first_warehouse = self.current_population[first_warehouse_index]
-        second_warehouse = self.current_population[second_warehouse_index]
+        # first_warehouse = self.current_population[first_warehouse_index]
+        # second_warehouse = self.current_population[second_warehouse_index]
 
         border = self.create_crossover_border()
         print("-- border: ", border, " --")
@@ -112,11 +112,37 @@ class EvolutionaryAlgotihm():
         count_blocks_area = np.count_nonzero(wh >= 0)
         count_warehouse_size = wh.size - np.count_nonzero(wh == -2)
 
-        return count_warehouse_size-count_blocks_area
+        return count_blocks_area
 
 
-    def tournament_selection(self, number_of_blocks_to_pick):
+    def tournament_selection(self, number_of_blocks_to_pick=2):
         probability_distribution= [self.evaluate_function(x.warehouse_matrix) for x in self.current_population]
         draw = np.random.choice(self.current_population, number_of_blocks_to_pick, probability_distribution)
-        print(draw)
+        return draw
+
+
+
+    def run(self, pc= 0.5):
+        stop = False
+
+        self.generate_population()
+        t= 0
+        while (not stop):
+            O = []
+            for i in range (len(self.current_population)):
+                a= random.randint(0, 100)/100
+                if (a<pc):
+                    wh1, wh2 = self.tournament_selection()
+                    wh = self.crossover(wh1, wh2)
+                else:
+                    wh= self.tournament_selection(1)[0]
+                self.current_population[i]= wh
+                self.mutation(i)
+            t= t + 1
+            if (t>2000):
+                stop= True
+        print([self.evaluate_function(x.warehouse_matrix) for x in self.current_population])
+        for wh in self.current_population:
+            print(wh.warehouse_matrix)
+            print("-------------------------------------")
 
