@@ -39,11 +39,19 @@ if(__name__ == "__main__"):
     """ demonstration of ea"""
     ea = EvolutionaryAlgotihm()
 
-    ea.mutation(0)
-    ea.mutation(1)
+    ## crossover
+    # ea.mutation(0)
+    ea.current_population[0].place_block(0,1,1)
+    ea.current_population[0].place_block(1,2,4)
+    ea.current_population[0].place_block(2,2,15)  
+    # ea.mutation(1)
+    ea.current_population[1].place_block(0,1,2)
+    ea.current_population[1].place_block(1,2,8)
+    ea.current_population[1].place_block(2,3,15) 
+
     print(ea.current_population[0].warehouse_matrix)
     print(ea.current_population[1].warehouse_matrix)
-    print(ea.crossover(0,1))
+    print(ea.crossover(0,1).warehouse_matrix)
 
 
     ea.tournament_selection(2)
