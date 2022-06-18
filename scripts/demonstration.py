@@ -1,5 +1,6 @@
 from warehouse import Warehouse
 from evaluator import Evaluator
+from evolutionary_algorithm import EvolutionaryAlgotihm
 import numpy as np
 import os
 
@@ -57,3 +58,8 @@ if(__name__ == "__main__"):
     print(eval.path_on_left_from_block(x_origin, y_origin, x_len))
     print(eval.path_on_right_from_block(x_origin, y_end, x_len))
     print(eval.has_access_to_path(0))
+
+
+
+    EA = EvolutionaryAlgotihm()
+    print(EA.crossover())
