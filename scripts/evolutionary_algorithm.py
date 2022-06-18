@@ -21,11 +21,11 @@ class EvolutionaryAlgotihm():
              for i in range(self.population_size) ]
 
 
-    def mutation(self):
-        if(len(self.warehouse.blocks_in_warehouse) == 0):
-            self.warehouse.place_random_block()
+    def mutation(self, block_index):
+        if(len(self.current_population[block_index].blocks_in_warehouse) == 0):
+            self.current_population[block_index].place_random_block()
         else:
-            self.warehouse.random_operation()
+            self.current_population[block_index].random_operation()
 
     def create_crossover_border(self):
         #TO DO po zmianie 
@@ -55,8 +55,8 @@ class EvolutionaryAlgotihm():
     def crossover(self, first_warehouse_index, second_warehouse_index):
 
         #TO DO po zmianie 
-        first_warehouse = self.current_population[first_warehouse_index]
-        second_warehouse = self.current_population[second_warehouse_index]
+        first_warehouse = self.current_population[first_warehouse_index].warehouse_matrix
+        second_warehouse = self.current_population[second_warehouse_index].warehouse_matrix
 
         border = self.create_crossover_border()
         left_warehouse, uniq_left = self.delete_divided_blocks(first_warehouse, border, 'left')

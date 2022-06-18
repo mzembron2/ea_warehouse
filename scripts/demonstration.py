@@ -36,30 +36,33 @@ if(__name__ == "__main__"):
     # wh.remove_random_block()
     # print(wh.warehouse_matrix)
     
+    """ demonstration of ea"""
+    ea = EvolutionaryAlgotihm()
+
+    ea.mutation(0)
+    ea.mutation(1)
+    print(ea.current_population[0].warehouse_matrix)
+    print(ea.current_population[1].warehouse_matrix)
+    print(ea.crossover(0,1))
 
     """ demonstartion of evaluator """
-    wh.place_block(0,11,4)
-    wh.place_block(1, 11, 3 )
-    print(wh.warehouse_matrix)
+    # wh.place_block(0,11,4)
+    # wh.place_block(1, 11, 3 )
+    # print(wh.warehouse_matrix)
 
-    current_block = wh.blocks_dict[0]
-    assert(current_block.is_position_set())
-    x_origin = current_block.x_origin
-    y_origin = current_block.y_origin
-    x_len = current_block.x_length
-    y_len = current_block.y_length
-    x_end = x_origin + x_len -1
-    y_end = y_origin + y_len -1
+    # current_block = wh.blocks_dict[0]
+    # assert(current_block.is_position_set())
+    # x_origin = current_block.x_origin
+    # y_origin = current_block.y_origin
+    # x_len = current_block.x_length
+    # y_len = current_block.y_length
+    # x_end = x_origin + x_len -1
+    # y_end = y_origin + y_len -1
 
-    eval = Evaluator(wh)
+    # eval = Evaluator(wh)
 
-    print(eval.path_above_block(x_origin, y_origin, y_len))
-    print(eval.path_below_block(x_end, y_origin, y_len))
-    print(eval.path_on_left_from_block(x_origin, y_origin, x_len))
-    print(eval.path_on_right_from_block(x_origin, y_end, x_len))
-    print(eval.has_access_to_path(0))
-
-
-
-    EA = EvolutionaryAlgotihm()
-    print(EA.crossover())
+    # print(eval.path_above_block(x_origin, y_origin, y_len))
+    # print(eval.path_below_block(x_end, y_origin, y_len))
+    # print(eval.path_on_left_from_block(x_origin, y_origin, x_len))
+    # print(eval.path_on_right_from_block(x_origin, y_end, x_len))
+    # print(eval.has_access_to_path(0))
