@@ -11,7 +11,7 @@ FILENAME_BLOCKS = os.path.join(DIRNAME, '../data/blocks.csv')
 class EvolutionaryAlgotihm():
     
     def __init__(self, population_size = 4):
-        self.warehouse = Warehouse(4,17)
+        self.warehouse = Warehouse(4,4)
         self.warehouse.get_blocks_from_csv(FILENAME_BLOCKS)
         self.population_size = population_size
         self.generate_population()
@@ -64,20 +64,22 @@ class EvolutionaryAlgotihm():
         # second_warehouse = self.current_population[second_warehouse_index]
 
         border = self.create_crossover_border()
-        print("-- border: ", border, " --")
+        # print("-- border: ", border, " --")
         # left_warehouse, uniq_left = self.delete_divided_blocks(first_warehouse, border, 'left')
         # right_warehouse, uniq_right = self.delete_divided_blocks(second_warehouse, border, 'right')
 
         left_warehouse = self.delete_divided_blocks(first_warehouse, border, 'left')
         right_warehouse = self.delete_divided_blocks(second_warehouse, border, 'right')
         # for u_l in uniq_left:
-        for u_l in left_warehouse.blocks_in_warehouse:
-            if u_l in right_warehouse.blocks_in_warehouse:
-                if(random.choice([True, False])):
-                    right_warehouse.remove_block(u_l)
+        blocks_in_left_warehouse = copy.deepcopy(left_warehouse.blocks_in_warehouse)
+        for block_id in blocks_in_left_warehouse:
+            if block_id in right_warehouse.blocks_in_warehouse:
+                random_result = random.choice([True, False])
+                if(random_result):
+                    right_warehouse.remove_block(block_id)
                     # uniq_right = uniq_right[uniq_right!=u_l]
                 else:
-                    left_warehouse.remove_block(u_l)
+                    left_warehouse.remove_block(block_id)
                     # uniq_left = uniq_left[uniq_left!=u_l]
         
         #TO DO po zmianie 
@@ -114,18 +116,15 @@ class EvolutionaryAlgotihm():
 
         return count_blocks_area
 
-
     def tournament_selection(self, number_of_blocks_to_pick=2):
         probability_distribution= [self.evaluate_function(x.warehouse_matrix) for x in self.current_population]
         draw = np.random.choice(self.current_population, number_of_blocks_to_pick, probability_distribution)
         return draw
 
-
-
     def run(self, pc= 0.5):
         stop = False
 
-        self.generate_population()
+        # self.generate_population()
         t= 0
         while (not stop):
             O = []
@@ -134,9 +133,9 @@ class EvolutionaryAlgotihm():
                 if (a<pc):
                     wh1, wh2 = self.tournament_selection()
                     wh = self.crossover(wh1, wh2)
-                else:
-                    wh= self.tournament_selection(1)[0]
-                self.current_population[i]= wh
+                # else:
+                #     wh= self.tournament_selection(1)[0]
+                    self.current_population[i]= wh
                 self.mutation(i)
             t= t + 1
             if (t>2000):

@@ -7,8 +7,26 @@ PATH_WIDTH = 1
 FREE_CELL_VALUE = -1
 
 class Evaluator():
-    def __init__(self, warehouse: Warehouse):
+    def __init__(self):
+        pass
+
+    def calculate_profit(self, warehouse: Warehouse):
+        profit = 0
         self.warehouse = warehouse
+        for block_index in warehouse.blocks_in_warehouse:
+            block_profit = self.calculate_block_area(block_index) 
+            if(not self.has_access_to_path(block_index)):
+                block_profit = block_profit/2
+            profit += block_profit
+
+        return profit
+
+    def calculate_block_area(self, block_index):
+        current_block = self.warehouse.blocks_dict[block_index]
+        x_len = current_block.x_length
+        y_len = current_block.y_length
+        return x_len*y_len
+
 
     def has_access_to_path(self, block_index):
         current_block = self.warehouse.blocks_dict[block_index]
@@ -64,7 +82,6 @@ class Evaluator():
     #     path_access_mask = np.full((rows, columns), False,dtype=bool)
     #     for row in rows:
     #         for col in columns:
-
     
     def is_path(self, i=0, j=0):
         matrix = self.warehouse.warehouse_matrix
