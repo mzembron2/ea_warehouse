@@ -11,14 +11,15 @@ FILENAME_BLOCKS = os.path.join(DIRNAME, '../data/blocks.csv')
 
 class EvolutionaryAlgotihm():
     
-    def __init__(self, population_size = 4):
-        self.warehouse = Warehouse(6,6)
+    def __init__(self, population_size = 4, iterations_number = 2000):
+        self.warehouse = Warehouse(10,10)
         self.warehouse.get_blocks_from_csv(FILENAME_BLOCKS)
         self.population_size = population_size
         self.generate_population()
         self.evaluator = Evaluator()
         self.largest_profit = 0
         self.best_warehouse = None
+        self.iterations_number = iterations_number
     
     def generate_population(self):
         self.current_population = [copy.deepcopy(self.warehouse)
@@ -27,8 +28,10 @@ class EvolutionaryAlgotihm():
     def mutation(self, block_index):
         if(len(self.current_population[block_index].blocks_in_warehouse) == 0):
             self.current_population[block_index].place_random_block()
+            self.current_population[block_index].rotate_random_block()
         else:
             self.current_population[block_index].random_operation()
+            self.current_population[block_index].rotate_random_block()
 
     def create_crossover_border(self):
         #TO DO po zmianie 
@@ -147,7 +150,7 @@ class EvolutionaryAlgotihm():
                     print(child.warehouse_matrix)
                     self.best_warehouse = copy.deepcopy(child)
             t= t + 1
-            if (t>5000):
+            if (t>self.iterations_number):
                 stop= True
         print([self.evaluate_function(x) for x in self.current_population])
         for wh in self.current_population:
@@ -155,4 +158,5 @@ class EvolutionaryAlgotihm():
             print("-------------------------------------")
         print("-- Largest profit: ", self.largest_profit, " --" )
         print(self.best_warehouse.warehouse_matrix)
+        return self.best_warehouse
 

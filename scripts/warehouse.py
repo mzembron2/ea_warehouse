@@ -109,6 +109,13 @@ class Warehouse():
             placed = True
             return True 
 
+    def rotate_random_block(self) -> bool:
+        if(len(self.blocks_in_waiting_list) > 0):
+            random_index = random.choice(self.blocks_in_waiting_list)
+            self.rotate_block(random_index)
+            return True
+        else:
+            return False
     def remove_random_block(self) -> bool:
         if(len(self.blocks_in_warehouse) == 0):
             return False
