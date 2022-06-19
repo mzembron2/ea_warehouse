@@ -14,10 +14,12 @@ FILENAME_BLOCKS = os.path.join(DIRNAME, '../data/blocks.csv')
 class Bruteforce():
     
     def __init__(self):
-        self.warehouse = Warehouse(3,3)
+        self.warehouse = Warehouse(6,6)
         self.warehouse.get_blocks_from_csv(FILENAME_BLOCKS)
         self.evaluator = Evaluator(self.warehouse)
         self.list_of_grids= []
+        self.const_block_dict = self.warehouse.blocks_dict
+        self.const_block_waiting_list = self.warehouse.blocks_in_waiting_list
         self.max_num = 1
 
     def getOccupiedArea(self, grid):
@@ -28,36 +30,38 @@ class Bruteforce():
         for y in range(ymax):
             for x in range(xmax):
                 if self.warehouse.warehouse_matrix[x][y]==FREE_CELL_VALUE:
-                    for n in self.warehouse.blocks_in_waiting_list:
-                        x_len = self.warehouse.blocks_dict[n].x_length
-                        y_len = self.warehouse.blocks_dict[n].y_length
-                        if self.warehouse.is_spot_available(y, x, y_len, x_len):
+                    for n in self.const_block_waiting_list:
+                        x_len = self.const_block_dict[n].x_length
+                        y_len = self.const_block_dict[n].y_length
+                        if self.warehouse.is_spot_available(x, y, x_len, y_len):
                             self.warehouse.place_block(n, x, y)
                             if(self.evaluator.has_access_to_path(n)):
                                 self.solve()
                             self.warehouse.remove_block(n)
-                        # if (x_len!=y_len):
-                        #     if self.warehouse.is_spot_available(y, x, x_len, y_len):
-                        #         for i in range(x_len):
-                        #             for j in range(y_len):
-                        #                 grid[y+i][x+j]=n+1
-                        #         if(checkContainerList(grid, len(grid)-1, len(grid)-1)):
-                        #             solve()
-                        #         for i in range(x_len):
-                        #             for j in range(y_len):
-                        #                 grid[y+i][x+j]=FREE_CELL_VALUE
-    #                 return  
-        grid = self.warehouse.warehouse_matrix   
-        if self.getOccupiedArea(grid)== self.max_num:
-            self.list_of_grids.append(copy.deepcopy(grid))
-        elif self.getOccupiedArea(grid)>self.max_num:
-            self.max_num=self.getOccupiedArea(grid)
+                        if (x_len!=y_len):
+                            self.warehouse.rotate_block(n)
+                            x_len = self.const_block_dict[n].x_length
+                            y_len = self.const_block_dict[n].y_length
+                            if self.warehouse.is_spot_available(x, y, x_len, y_len):
+                                self.warehouse.place_block(n, x, y)
+                                if(self.evaluator.has_access_to_path(n)):
+                                    self.solve()
+                                self.warehouse.remove_block(n)
+                            self.warehouse.rotate_block(n)
+                    # return  
+        some_val_to_compare= self.evaluator.calculate_profit(self.warehouse)
+        if some_val_to_compare == self.max_num:
+            self.list_of_grids.append(copy.deepcopy(self.warehouse.warehouse_matrix ))
+        elif some_val_to_compare>self.max_num:
+            self.max_num= some_val_to_compare
             self.list_of_grids= []
-            self.list_of_grids.append(copy.deepcopy(grid))
+            self.list_of_grids.append(copy.deepcopy(self.warehouse.warehouse_matrix ))
+        print(self.max_num)
 
 
     def show(self):
         print(self.max_num)
+        print(self.list_of_grids)
         for grid in self.list_of_grids:
             print(np.matrix(grid))
 
