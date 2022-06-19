@@ -12,7 +12,7 @@ FILENAME_BLOCKS = os.path.join(DIRNAME, '../data/blocks.csv')
 class EvolutionaryAlgotihm():
     
     def __init__(self, population_size = 4):
-        self.warehouse = Warehouse(10,10)
+        self.warehouse = Warehouse(6,6)
         self.warehouse.get_blocks_from_csv(FILENAME_BLOCKS)
         self.population_size = population_size
         self.generate_population()
@@ -143,7 +143,7 @@ class EvolutionaryAlgotihm():
                 child_profit = self.evaluate_function(child)
                 if(child_profit > self.largest_profit):
                     self.largest_profit = child_profit
-                    print("-- current best profit: ", child_profit, " --")
+                    print("-- current largest profit: ", child_profit, " --")
                     self.best_warehouse = copy.deepcopy(child)
             t= t + 1
             if (t>2000):
@@ -152,6 +152,6 @@ class EvolutionaryAlgotihm():
         for wh in self.current_population:
             print(wh.warehouse_matrix)
             print("-------------------------------------")
-        print("-- Largest porfit: ", self.largest_profit, " --" )
+        print("-- Largest profit: ", self.largest_profit, " --" )
         print(self.best_warehouse.warehouse_matrix)
 
