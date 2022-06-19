@@ -144,9 +144,10 @@ class EvolutionaryAlgotihm():
                 if(child_profit > self.largest_profit):
                     self.largest_profit = child_profit
                     print("-- current largest profit: ", child_profit, " --")
+                    print(child.warehouse_matrix)
                     self.best_warehouse = copy.deepcopy(child)
             t= t + 1
-            if (t>2000):
+            if (t>5000):
                 stop= True
         print([self.evaluate_function(x) for x in self.current_population])
         for wh in self.current_population:

@@ -79,7 +79,7 @@ class Evaluator():
         
         arr = copy.deepcopy(self.warehouse.warehouse_matrix)
         # directions
-        Dir = [ [0, 1], [0, -1], [1, 0], [-1, 0]]
+        directions = [ [0, 1], [0, -1], [1, 0], [-1, 0]]
         # queue
         q = []
 
@@ -104,8 +104,8 @@ class Evaluator():
             for i in range(4) :
             
                 # using the direction array
-                a = p[0] + Dir[i][0]
-                b = p[1] + Dir[i][1]
+                a = p[0] + directions[i][0]
+                b = p[1] + directions[i][1]
                 
                 # not blocked and valid
                 if(a >= 0 and b >= 0 and a <= goal_x and b <= goal_y and arr[a][b] < 0) :           

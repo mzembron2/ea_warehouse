@@ -35,6 +35,16 @@ class Warehouse():
         self.blocks_in_waiting_list.remove(index)
         self.blocks_in_warehouse.append(index)
 
+    def rotate_block(self, index) -> bool:
+        if(index in self.blocks_in_waiting_list):
+            x_len_prev = copy.deepcopy(self.blocks_dict[index].x_length)
+            y_len_prev = copy.deepcopy(self.blocks_dict[index].y_length)
+            self.blocks_dict[index].x_length = y_len_prev
+            self.blocks_dict[index].y_length = x_len_prev
+            return True
+        else:
+            return False
+
     def remove_block(self, index):
         current_block = self.blocks_dict[index]
         assert(current_block.is_position_set())
