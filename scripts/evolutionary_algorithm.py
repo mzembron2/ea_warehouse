@@ -1,4 +1,5 @@
 from warehouse import Warehouse 
+from evaluator import Evaluator
 import numpy as np
 import random
 import copy
@@ -11,10 +12,13 @@ FILENAME_BLOCKS = os.path.join(DIRNAME, '../data/blocks.csv')
 class EvolutionaryAlgotihm():
     
     def __init__(self, population_size = 4):
-        self.warehouse = Warehouse(4,4)
+        self.warehouse = Warehouse(10,10)
         self.warehouse.get_blocks_from_csv(FILENAME_BLOCKS)
         self.population_size = population_size
         self.generate_population()
+        self.evaluator = Evaluator()
+        self.largest_profit = 0
+        self.best_warehouse = None
     
     def generate_population(self):
         self.current_population = [copy.deepcopy(self.warehouse)
@@ -107,17 +111,15 @@ class EvolutionaryAlgotihm():
 
         return child
 
-    def evaluate_function(self, wh):
+    def evaluate_function(self, wh: Warehouse):
         
         # wh = self.current_population[warehouse_index].warehouse_matrix
-
-        count_blocks_area = np.count_nonzero(wh >= 0)
-        count_warehouse_size = wh.size - np.count_nonzero(wh == -2)
-
-        return count_blocks_area
+        # count_blocks_area = np.count_nonzero(wh >= 0)
+        # count_warehouse_size = wh.size - np.count_nonzero(wh == -2)
+        return self.evaluator.calculate_profit(wh)
 
     def tournament_selection(self, number_of_blocks_to_pick=2):
-        probability_distribution= [self.evaluate_function(x.warehouse_matrix) for x in self.current_population]
+        probability_distribution= [self.evaluate_function(x) for x in self.current_population]
         draw = np.random.choice(self.current_population, number_of_blocks_to_pick, probability_distribution)
         return draw
 
@@ -137,11 +139,19 @@ class EvolutionaryAlgotihm():
                 #     wh= self.tournament_selection(1)[0]
                     self.current_population[i]= wh
                 self.mutation(i)
+                child = self.current_population[i]
+                child_profit = self.evaluate_function(child)
+                if(child_profit > self.largest_profit):
+                    self.largest_profit = child_profit
+                    print("-- current best profit: ", child_profit, " --")
+                    self.best_warehouse = copy.deepcopy(child)
             t= t + 1
             if (t>2000):
                 stop= True
-        print([self.evaluate_function(x.warehouse_matrix) for x in self.current_population])
+        print([self.evaluate_function(x) for x in self.current_population])
         for wh in self.current_population:
             print(wh.warehouse_matrix)
             print("-------------------------------------")
+        print("-- Largest porfit: ", self.largest_profit, " --" )
+        print(self.best_warehouse.warehouse_matrix)
 
