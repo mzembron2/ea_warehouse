@@ -26,6 +26,8 @@ class Warehouse():
 
     def place_block(self, index, x_origin, y_origin):
         current_block = self.blocks_dict[index]
+        #DEBUG
+        # assert(self.is_spot_available(x_origin, y_origin,current_block.x_length,current_block.y_length ))
         self.warehouse_matrix[x_origin:x_origin + current_block.x_length,
             y_origin:y_origin + current_block.y_length] = index
 
