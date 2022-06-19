@@ -1,6 +1,7 @@
 from warehouse import Warehouse
 from evaluator import Evaluator
 from evolutionary_algorithm import EvolutionaryAlgotihm
+from brutforce_algortihm import Bruteforce
 import numpy as np
 import os
 
@@ -38,36 +39,43 @@ if(__name__ == "__main__"):
     
     """ block rotation """
 
-    wh.place_block(6, 0, 0)
-    print(wh.warehouse_matrix)
-    wh.remove_block(6)
-    wh.rotate_block(6)
-    wh.place_block(6, 0, 0)
-    print(wh.warehouse_matrix)
+    # wh.place_block(6, 0, 0)
+    # print(wh.warehouse_matrix)
+    # wh.remove_block(6)
+    # wh.rotate_block(6)
+    # wh.place_block(6, 0, 0)
+    # print(wh.warehouse_matrix)
 
     """ demonstration of ea"""
-    # ea = EvolutionaryAlgotihm()
+    ea = EvolutionaryAlgotihm()
 
-    # ## crossover
-    # # ea.mutation(0)
-    # ea.current_population[0].place_block(0,1,1)
-    # ea.current_population[0].place_block(1,2,4)
-    # ea.current_population[0].place_block(2,2,15)  
-    # # ea.mutation(1)
-    # ea.current_population[1].place_block(0,1,2)
-    # ea.current_population[1].place_block(1,2,8)
-    # ea.current_population[1].place_block(2,3,15) 
-
-
-    # wh1 = ea.current_population[0]
-    # wh2 = ea.current_population[1]
-    # print(wh1.warehouse_matrix)
-    # print(wh2.warehouse_matrix)
-    # print(ea.crossover(wh1,wh2).warehouse_matrix)
+    ## crossover
+    # ea.mutation(0)
+    ea.current_population[0].place_block(0,1,1)
+    ea.current_population[0].place_block(1,2,4)
+    ea.current_population[0].place_block(2,2,15)  
+    # ea.mutation(1)
+    ea.current_population[1].place_block(0,1,2)
+    ea.current_population[1].place_block(1,2,8)
+    ea.current_population[1].place_block(2,3,15) 
 
 
-    # ea.tournament_selection(2)
+    wh1 = ea.current_population[0]
+    wh2 = ea.current_population[1]
+    print(wh1.warehouse_matrix)
+    print(wh2.warehouse_matrix)
+    print(ea.crossover(wh1,wh2).warehouse_matrix)
+
+
+    ea.tournament_selection(2)
     # ea.run()
+    
+
+
+    bf = Bruteforce()
+    bf.solve()
+    bf.show()
+
 
     """ demonstartion of evaluator """
     # wh.place_block(0,11,4)
