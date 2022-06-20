@@ -25,7 +25,6 @@ def read_file():
             new_data[0].append(int(splited_data[0]))
             new_data[1].append(float(splited_data[1]))
     all_data.append(new_data)
-    print(all_data)
     set_same_iteration_length(all_data)
     plot_data(all_data, title)
 
@@ -34,13 +33,14 @@ def set_same_iteration_length(data):
     # print(iter[-1])
     highiest_iter = iter[-1]
     for element in data:
-        element[0].append(iter[-1])
+        # if(element[0] !=iter[-1]):
+        element[0].append(highiest_iter+10)
         element[1].append(element[1][-1])
 
 def plot_data(data, title):
     for element in data:
         name = "Final score: "+str(element[1][-1])
-        plt.plot(element[0],element[1], label = name)
+        plt.step(element[0],element[1], label = name, where = 'post')
     plt.legend()
     plt.title(title)
     plt.show()

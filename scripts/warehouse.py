@@ -60,7 +60,7 @@ class Warehouse():
         self.blocks_in_warehouse.remove(index)
         self.blocks_in_waiting_list.append(index)
 
-    def is_spot_available(self, x, y, x_len, y_len):
+    def is_spot_available(self, x, y, x_len, y_len) ->bool:
         indexes = np.unique(self.warehouse_matrix[x:x+x_len,y:y+y_len])
         max_x = self.warehouse_matrix.shape[0] - 1
         max_y = self.warehouse_matrix.shape[1] - 1

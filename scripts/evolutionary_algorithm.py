@@ -82,14 +82,22 @@ class EvolutionaryAlgotihm():
         assert(len(child.blocks_in_warehouse) == 0)
 
         for block_index in left_warehouse.blocks_in_warehouse:
+            #should check if block can be placed
             x_origin = left_warehouse.blocks_dict[block_index].x_origin
             y_origin = left_warehouse.blocks_dict[block_index].y_origin
-            child.place_block(block_index, x_origin, y_origin)
+            #child can have block with diffrent rotation
+            x_len = child.blocks_dict[block_index].x_length
+            y_len = child.blocks_dict[block_index].y_length
+            if(child.is_spot_available(x_origin, y_origin, x_len, y_len)):
+                child.place_block(block_index, x_origin, y_origin)
 
         for block_index in right_warehouse.blocks_in_warehouse:
             x_origin = right_warehouse.blocks_dict[block_index].x_origin
             y_origin = right_warehouse.blocks_dict[block_index].y_origin
-            child.place_block(block_index, x_origin, y_origin)
+            x_len = child.blocks_dict[block_index].x_length
+            y_len = child.blocks_dict[block_index].y_length
+            if(child.is_spot_available(x_origin, y_origin, x_len, y_len)):
+                child.place_block(block_index, x_origin, y_origin)
 
         return child
 

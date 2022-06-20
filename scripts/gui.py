@@ -35,7 +35,7 @@ class Gui():
         self.save_blocks()
 
     def ea_button_callback(self):
-        ea = EvolutionaryAlgotihm(population_size=8, iterations_number=2000, use_crossover=True)
+        ea = EvolutionaryAlgotihm(population_size=20, iterations_number=2000, use_crossover=True)
         wh = ea.run()
         self.display_warehouse(wh)
 
