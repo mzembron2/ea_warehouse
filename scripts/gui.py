@@ -14,7 +14,8 @@ FILENAME_BLOCKS = os.path.join(DIRNAME, '../data/blocks.csv')
 
 class Gui():
     def __init__(self):
-        self.color_list = ["Red", "Green", "Blue", "Yellow", "RoyalBlue", "LightSkyBlue"]
+        self.color_list = ["Red", "Green", "Blue", "Yellow", "RoyalBlue", "LightSkyBlue",
+        "aliceblue", "lime", "orange", "purple", "dimgray", "navy", "white", "indigo"  ]
         self.blocks = self.load_data()
 
     def button_callback(self):
@@ -34,7 +35,7 @@ class Gui():
         self.save_blocks()
 
     def ea_button_callback(self):
-        ea = EvolutionaryAlgotihm(population_size=8, iterations_number=5000)
+        ea = EvolutionaryAlgotihm(population_size=8, iterations_number=2000, use_crossover=True)
         wh = ea.run()
         self.display_warehouse(wh)
 
@@ -73,9 +74,10 @@ class Gui():
             x_len = current_block.x_length
             y_len = current_block.y_length
 
-            self.fig.add_shape(type="rect",
+            self.fig.add_shape(type="rect", name = str(block_index),
                 x0=y_origin, y0=-x_origin, x1=y_origin +
                     y_len , y1=-(x_origin + x_len),
+                editable = True,
                 line=dict(color="RoyalBlue"),
                 fillcolor=self.color_list[random.randint(0, len(self.color_list)-1)],
             )

@@ -8,11 +8,12 @@ import os
 FREE_CELL_VALUE = -1
 DIRNAME = os.path.dirname(__file__)
 FILENAME_BLOCKS = os.path.join(DIRNAME, '../data/blocks.csv')
+FILENAME_PERFORMANCE = os.path.join(DIRNAME, '../data/performance.txt')
 
 class EvolutionaryAlgotihm():
     
-    def __init__(self, population_size = 4, iterations_number = 2000):
-        self.warehouse = Warehouse(10,10)
+    def __init__(self, population_size = 4, iterations_number = 2000, use_crossover = True):
+        self.warehouse = Warehouse(6,6)
         self.warehouse.get_blocks_from_csv(FILENAME_BLOCKS)
         self.population_size = population_size
         self.generate_population()
@@ -20,22 +21,30 @@ class EvolutionaryAlgotihm():
         self.largest_profit = 0
         self.best_warehouse = None
         self.iterations_number = iterations_number
+        self.use_crossover = use_crossover
+        self.performance = []
     
     def generate_population(self):
         self.current_population = [copy.deepcopy(self.warehouse)
              for i in range(self.population_size)]
 
-    def mutation(self, block_index):
-        if(len(self.current_population[block_index].blocks_in_warehouse) == 0):
-            self.current_population[block_index].place_random_block()
-            self.current_population[block_index].rotate_random_block()
+    def mutation(self,population, block_index):
+        # if(len(self.current_population[block_index].blocks_in_warehouse) == 0):
+        #     self.current_population[block_index].place_random_block()
+        #     self.current_population[block_index].rotate_random_block()
+        # else:
+        #     self.current_population[block_index].random_operation()
+        #     self.current_population[block_index].rotate_random_block()
+        if(len(population[block_index].blocks_in_warehouse) == 0):
+            population[block_index].place_random_block()
+            population[block_index].rotate_random_block()
         else:
-            self.current_population[block_index].random_operation()
-            self.current_population[block_index].rotate_random_block()
+            population[block_index].random_operation()
+            population[block_index].rotate_random_block()
 
     def create_crossover_border(self):
-        #TO DO po zmianie 
-        return random.randint(0, self.warehouse.warehouse_matrix.shape[1] - 1) # chyba shape[1]-1
+
+        return random.randint(0, self.warehouse.warehouse_matrix.shape[1] - 1) 
 
     def delete_divided_blocks(self, some_warehouse, border, side):
         left_warehouse_matrix = some_warehouse.warehouse_matrix[:,:border]
@@ -46,56 +55,26 @@ class EvolutionaryAlgotihm():
 
         if (side == "left"):
             for u_r in uniq_right:
-                # if u_r in uniq_left:
-                #     some_warehoue.remove_block(u_r)
-                #     uniq_left = uniq_left[uniq_left!=u_r]
-
-                ##!! usuwam wszystkie bloki z prawej strony - pozostawiam tylko lewe
                 some_warehouse.remove_block(u_r)
-                # uniq_left = uniq_left[uniq_left!=u_r]
-            # return some_warehouse, uniq_left
             return some_warehouse
         else:
             for u_l in uniq_left:
-                # if u_l in uniq_right:
-
-                ## !! analogicznie jak wyzej 
                 some_warehouse.remove_block(u_l)
-                # uniq_right = uniq_right[uniq_right!=u_l]
-            # return some_warehouse, uniq_right
             return some_warehouse
+
     def crossover(self, first_warehouse, second_warehouse) -> Warehouse:
-
-        #TO DO po zmianie 
-        # first_warehouse = self.current_population[first_warehouse_index]
-        # second_warehouse = self.current_population[second_warehouse_index]
-
         border = self.create_crossover_border()
-        # print("-- border: ", border, " --")
-        # left_warehouse, uniq_left = self.delete_divided_blocks(first_warehouse, border, 'left')
-        # right_warehouse, uniq_right = self.delete_divided_blocks(second_warehouse, border, 'right')
-
         left_warehouse = self.delete_divided_blocks(first_warehouse, border, 'left')
         right_warehouse = self.delete_divided_blocks(second_warehouse, border, 'right')
-        # for u_l in uniq_left:
         blocks_in_left_warehouse = copy.deepcopy(left_warehouse.blocks_in_warehouse)
+
         for block_id in blocks_in_left_warehouse:
             if block_id in right_warehouse.blocks_in_warehouse:
                 random_result = random.choice([True, False])
                 if(random_result):
                     right_warehouse.remove_block(block_id)
-                    # uniq_right = uniq_right[uniq_right!=u_l]
                 else:
                     left_warehouse.remove_block(block_id)
-                    # uniq_left = uniq_left[uniq_left!=u_l]
-        
-        #TO DO po zmianie 
-        # warehouse_to_return = np.full(self.warehouse.warehouse_matrix.shape, FREE_CELL_VALUE,dtype=int)
-        # warehouse_to_return[:][:border] =  left_warehouse
-        # warehouse_to_return[:][border:] = right_warehouse
-        # return warehouse_to_return
-
-        ##!! zwracam caly warehouse
         return self.create_child(left_warehouse, right_warehouse)
 
     def create_child(self, left_warehouse: Warehouse, right_warehouse: Warehouse) -> Warehouse:
@@ -115,48 +94,86 @@ class EvolutionaryAlgotihm():
         return child
 
     def evaluate_function(self, wh: Warehouse):
-        
-        # wh = self.current_population[warehouse_index].warehouse_matrix
-        # count_blocks_area = np.count_nonzero(wh >= 0)
-        # count_warehouse_size = wh.size - np.count_nonzero(wh == -2)
         return self.evaluator.calculate_profit(wh)
 
-    def tournament_selection(self, number_of_blocks_to_pick=2):
-        probability_distribution= [self.evaluate_function(x) for x in self.current_population]
+    def tournament_selection(self, number_of_blocks_to_pick=2, probability_distribution=None):
+        if(probability_distribution ==None):
+            probability_distribution= [self.evaluate_function(x) for x in self.current_population]
         draw = np.random.choice(self.current_population, number_of_blocks_to_pick, probability_distribution)
         return draw
 
+    def save_performance_to_txt(self):
+        with open(FILENAME_PERFORMANCE, 'a') as f:
+            f.write('Population size: %i, iterations: %i, crossover: %s, blocks num: %i, warehouse size: %ix%i\n'%
+                (self.population_size, self.iterations_number, str(self.use_crossover),
+                len(self.warehouse.blocks_dict), np.shape(self.warehouse.warehouse_matrix)[0],
+                np.shape(self.warehouse.warehouse_matrix)[1]))
+            for element in self.performance:
+                f.write('%i %f\n' % (element[0], element[1]))
+
+    # def evaluate_population(self, iteration):
+    #     population_profits_list = [self.evaluate_function(x) for x in self.current_population]
+    #     population_profit_ziped = zip(self.current_population, population_profits_list)
+    #     best_wh_ziped= max(population_profit_ziped, key = lambda i : i[1])
+
+    #     if(best_wh_ziped[1] > self.largest_profit):
+    #         self.largest_profit = best_wh_ziped[1]
+    #         print("-- current largest profit: ", best_wh_ziped[1], " --")
+    #         print(best_wh_ziped[0].warehouse_matrix)
+    #         self.best_warehouse = copy.deepcopy(best_wh_ziped[0])
+    #         self.performance.append((iteration,best_wh_ziped[1]))
+
+    #     return population_profits_list
+
     def run(self, pc= 0.5):
         stop = False
+        self.performance.clear()
+        iteration= 0
+        while (iteration< self.iterations_number):
+            # 
+            next_population = copy.deepcopy(self.current_population)
+            population_profits_list = [self.evaluate_function(x) for x in self.current_population]
+            population_profit_ziped = zip(self.current_population, population_profits_list)
+            # population_profits_list = self.evaluate_population(iteration)
+            best_wh_ziped= max(population_profit_ziped, key = lambda i : i[1])
+            if(best_wh_ziped[1] > self.largest_profit):
+                    self.largest_profit = best_wh_ziped[1]
+                    print("-- current largest profit: ", best_wh_ziped[1], " --")
+                    print(best_wh_ziped[0].warehouse_matrix)
+                    self.best_warehouse = copy.deepcopy(best_wh_ziped[0])
+                    self.performance.append((iteration,best_wh_ziped[1]))
+            
+            for element_index in range (len(self.current_population)):
 
-        # self.generate_population()
-        t= 0
-        while (not stop):
-            O = []
-            for i in range (len(self.current_population)):
-                a= random.randint(0, 100)/100
-                if (a<pc):
-                    wh1, wh2 = self.tournament_selection()
-                    wh = self.crossover(wh1, wh2)
-                # else:
-                #     wh= self.tournament_selection(1)[0]
-                    self.current_population[i]= wh
-                self.mutation(i)
-                child = self.current_population[i]
-                child_profit = self.evaluate_function(child)
-                if(child_profit > self.largest_profit):
-                    self.largest_profit = child_profit
-                    print("-- current largest profit: ", child_profit, " --")
-                    print(child.warehouse_matrix)
-                    self.best_warehouse = copy.deepcopy(child)
-            t= t + 1
-            if (t>self.iterations_number):
-                stop= True
-        print([self.evaluate_function(x) for x in self.current_population])
-        for wh in self.current_population:
-            print(wh.warehouse_matrix)
-            print("-------------------------------------")
+                if(self.use_crossover):
+                    a= random.randint(0, 100)/100
+                    if (a<pc):
+                        wh1, wh2 = self.tournament_selection(probability_distribution=population_profits_list)
+                        wh = self.crossover(wh1, wh2)
+                    # else:
+                    #     wh= self.tournament_selection(1)[0]
+                        next_population[element_index]= wh
+                        # next_population[i] = wh
+                        # 
+                else:
+                    wh= self.tournament_selection(number_of_blocks_to_pick=1,
+                        probability_distribution=population_profits_list)[0]
+                    next_population[element_index]= wh
+                self.mutation(next_population, element_index)
+                # child = self.current_population[i]
+                # child_profit = self.evaluate_function(child)
+                # if(child_profit > self.largest_profit):
+                #     self.largest_profit = child_profit
+                #     print("-- current largest profit: ", child_profit, " --")
+                #     print(child.warehouse_matrix)
+                #     self.best_warehouse = copy.deepcopy(child)
+
+            self.current_population = copy.deepcopy(next_population)
+            iteration+= 1
+
+        # print([self.evaluate_function(x) for x in self.current_population])
         print("-- Largest profit: ", self.largest_profit, " --" )
-        print(self.best_warehouse.warehouse_matrix)
+        print(self.best_warehouse.warehouse_matrix) 
+        self.save_performance_to_txt()
         return self.best_warehouse
 
