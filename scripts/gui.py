@@ -130,12 +130,25 @@ class Gui():
         self.button = st.button('Run evolution', on_click=self.ea_button_callback)
 
         st.markdown("# Settings section")
+        self.load_settings()
+        wh_y = self.settings["warehouse_y"]
+        wh_x = self.settings["warehouse_x"]
+        population = self.settings["population"]
+        iterations = self.settings["iterations"]
+        crossover = self.settings["crossover"]
+        crossover_yes_no = "yes" if crossover  else "no"
+
         st.markdown("## Parameters")
-        self.warehouse_x_input = st.text_input("warehouse x length")
-        self.warehouse_y_input = st.text_input("warehouse y length")
-        self.population_input = st.text_input("population size")
-        self.iterations_input = st.text_input("Maximum iterations")
-        self.crossover_input = st.text_input("Use crossover: yes/no")
+        self.warehouse_x_input = st.text_input("warehouse x length (current: %i)"%
+        wh_x)
+        self.warehouse_y_input = st.text_input("warehouse y length (current: %i)"%
+        wh_y)
+        self.population_input = st.text_input("population size (current: %i)"%
+        population)
+        self.iterations_input = st.text_input("Maximum iterations (current: %i)"%
+        iterations)
+        self.crossover_input = st.text_input("Use crossover: yes/no (current: %s)"%
+        crossover_yes_no)
         self.button = st.button('Update parameters', on_click=self.button_update_settings_callback)
         # st.markdown("## Add unavailable area to warehouse")
         # self.unav_x_length_input = st.text_input("x length")
