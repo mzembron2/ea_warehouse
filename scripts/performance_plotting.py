@@ -5,6 +5,7 @@ import os
 DIRNAME = os.path.dirname(__file__)
 FILENAME= os.path.join(DIRNAME, '../data/performance.txt')
 
+
 def read_file():
     all_data = []
     new_data = [[],[]]
@@ -30,10 +31,8 @@ def read_file():
 
 def set_same_iteration_length(data):
     iter, _= max(data, key= lambda i : i[0][-1])
-    # print(iter[-1])
     highiest_iter = iter[-1]
     for element in data:
-        # if(element[0] !=iter[-1]):
         element[0].append(highiest_iter+10)
         element[1].append(element[1][-1])
 

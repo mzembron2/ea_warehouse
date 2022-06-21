@@ -5,9 +5,7 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 import plotly.graph_objects as go
-import copy
 import os
-import random
 import json
 
 DIRNAME = os.path.dirname(__file__)
@@ -21,13 +19,13 @@ class Gui():
         self.blocks = self.load_data()
         self.settings = self.load_settings()
 
-    def button_callback(self):
+    def button_add_block_callback(self):
         st.text("Available blocks: ")
         self.blocks = self.load_data()
-        # (x_origin, y_origin) = self.calculate_origin(self.x_length_input, self.y_length_input)
         try:
             if(self.x_length_input != "" and self.y_length_input != "" and
             float(self.x_length_input)>0 and float(self.y_length_input) > 0):
+
                 new_element = {
                     'x_origin': 8,
                     'y_origin': 8,
@@ -41,6 +39,7 @@ class Gui():
         self.add_elements_to_plot()
         st.plotly_chart(self.fig)
         self.save_blocks()
+
 
     def button_update_settings_callback(self):
         self.load_settings()
@@ -90,7 +89,7 @@ class Gui():
                 print("Wrong format unavailable area!")
         ea = EvolutionaryAlgotihm(population_size= population,
             iterations_number = iterations, use_crossover = crossover,
-            warehouse= base_wh)
+            warehouse= base_wh, p_c = 0.5)
 
         wh = ea.run()
         self.display_warehouse(wh)
@@ -157,7 +156,7 @@ class Gui():
         st.markdown("## Add block")
         self.x_length_input = st.text_input("Block x length")
         self.y_length_input = st.text_input("Block y length")
-        self.button = st.button('Insert new block', on_click=self.button_callback)
+        self.button = st.button('Insert new block', on_click=self.button_add_block_callback)
 
     def add_blocks_to_plot(self, warehouse: Warehouse):
         for block_index in warehouse.blocks_in_warehouse:
@@ -172,7 +171,6 @@ class Gui():
                     y_len , y1=-(x_origin + x_len),
                 editable = True,
                 line=dict(color="RoyalBlue"),
-                # fillcolor=self.color_list[random.randint(0, len(self.color_list)-1)],
                 fillcolor="LightSkyBlue"
             )
 
@@ -198,15 +196,11 @@ class Gui():
                     row['y_length'] , y1= -(row['x_origin'] + row['x_length']),
                 line=dict(color="RoyalBlue"),
                 editable = True,
-                # fillcolor=self.color_list[random.randint(0, len(self.color_list)-1)],
                 fillcolor="LightSkyBlue"
             )
         self.fig.update_shapes(dict(xref='x', yref='y'))
     
     def main(self):
         self.prepare_widgets()
-        # Add shapes
-        # self.add_elements_to_plot()
-        # self.chart = st.plotly_chart(self.fig)
         
 

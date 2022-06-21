@@ -12,7 +12,7 @@ FILENAME_PERFORMANCE = os.path.join(DIRNAME, '../data/performance.txt')
 
 class EvolutionaryAlgotihm():
     
-    def __init__(self, population_size = 4, iterations_number = 2000, use_crossover = True, warehouse: Warehouse = None):
+    def __init__(self, population_size = 4, iterations_number = 2000, use_crossover = True, warehouse: Warehouse = None, p_c = 0.5):
         if(warehouse == None):
             self.warehouse = Warehouse(8,8)
         else:
@@ -22,6 +22,7 @@ class EvolutionaryAlgotihm():
         self.generate_population()
         self.evaluator = Evaluator()
         self.largest_profit = 0
+        self.p_c = p_c
         self.best_warehouse = None
         self.iterations_number = iterations_number
         self.use_crossover = use_crossover
@@ -32,12 +33,6 @@ class EvolutionaryAlgotihm():
              for i in range(self.population_size)]
 
     def mutation(self,population, block_index):
-        # if(len(self.current_population[block_index].blocks_in_warehouse) == 0):
-        #     self.current_population[block_index].place_random_block()
-        #     self.current_population[block_index].rotate_random_block()
-        # else:
-        #     self.current_population[block_index].random_operation()
-        #     self.current_population[block_index].rotate_random_block()
         if(len(population[block_index].blocks_in_warehouse) == 0):
             population[block_index].place_random_block()
             population[block_index].rotate_random_block()
@@ -52,9 +47,6 @@ class EvolutionaryAlgotihm():
     def delete_divided_blocks(self, some_warehouse, border, side):
         left_warehouse_matrix = some_warehouse.warehouse_matrix[:,:border]
         right_warehouse_matrix = some_warehouse.warehouse_matrix[:,border:]
-
-        # uniq_left = np.unique(left_warehouse_matrix[left_warehouse_matrix!=FREE_CELL_VALUE])
-        # uniq_right = np.unique(right_warehouse_matrix[right_warehouse_matrix!=FREE_CELL_VALUE])
         uniq_left = np.unique(left_warehouse_matrix[left_warehouse_matrix > FREE_CELL_VALUE])
         uniq_right = np.unique(right_warehouse_matrix[right_warehouse_matrix > FREE_CELL_VALUE])
 
@@ -124,20 +116,6 @@ class EvolutionaryAlgotihm():
             for element in self.performance:
                 f.write('%i %f\n' % (element[0], element[1]))
 
-    # def evaluate_population(self, iteration):
-    #     population_profits_list = [self.evaluate_function(x) for x in self.current_population]
-    #     population_profit_ziped = zip(self.current_population, population_profits_list)
-    #     best_wh_ziped= max(population_profit_ziped, key = lambda i : i[1])
-
-    #     if(best_wh_ziped[1] > self.largest_profit):
-    #         self.largest_profit = best_wh_ziped[1]
-    #         print("-- current largest profit: ", best_wh_ziped[1], " --")
-    #         print(best_wh_ziped[0].warehouse_matrix)
-    #         self.best_warehouse = copy.deepcopy(best_wh_ziped[0])
-    #         self.performance.append((iteration,best_wh_ziped[1]))
-
-    #     return population_profits_list
-
     def run(self, pc= 0.5):
         stop = False
         self.performance.clear()
@@ -160,32 +138,21 @@ class EvolutionaryAlgotihm():
 
                 if(self.use_crossover):
                     a= random.randint(0, 100)/100
-                    if (a<pc):
+                    if (a<self.p_c):
                         wh1, wh2 = self.tournament_selection(probability_distribution=population_profits_list)
                         wh = self.crossover(wh1, wh2)
-                    # else:
-                    #     wh= self.tournament_selection(1)[0]
                         next_population[element_index]= wh
-                        # next_population[i] = wh
-                        # 
+
                 else:
                     wh= self.tournament_selection(number_of_blocks_to_pick=1,
                         probability_distribution=population_profits_list)[0]
                     next_population[element_index]= wh
                 self.mutation(next_population, element_index)
-                # child = self.current_population[i]
-                # child_profit = self.evaluate_function(child)
-                # if(child_profit > self.largest_profit):
-                #     self.largest_profit = child_profit
-                #     print("-- current largest profit: ", child_profit, " --")
-                #     print(child.warehouse_matrix)
-                #     self.best_warehouse = copy.deepcopy(child)
+
 
             self.current_population = copy.deepcopy(next_population)
             iteration+= 1
             print("iterations: %i/%i"%(iteration,self.iterations_number))
-
-        # print([self.evaluate_function(x) for x in self.current_population])
         print("-- Largest profit: ", self.largest_profit, " --" )
         print(self.best_warehouse.warehouse_matrix) 
         self.save_performance_to_txt()
