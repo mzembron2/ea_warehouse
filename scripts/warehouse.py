@@ -6,6 +6,7 @@ import random
 import copy
 
 FREE_CELL_VALUE = -1
+UNAVAILABLE_AREA = -2
 
 class Warehouse():
     def __init__(self, rows, columns):
@@ -15,6 +16,7 @@ class Warehouse():
         """
         self.warehouse_matrix = np.full((rows, columns), FREE_CELL_VALUE,dtype=int)
         self.blocks_dict = {}
+        self.unavailable_area_list = []
         self.blocks_in_warehouse = []
         self.blocks_in_waiting_list = []
 
@@ -24,6 +26,13 @@ class Warehouse():
             self.blocks_dict[index] = Block(int(row['x_length']), int(row['y_length']))
             self.blocks_in_waiting_list.append(index)
 
+    def set_unavailable_area(self, x_origin, y_origin, x_len, y_len) -> bool:
+        if(self.is_spot_available(x_origin, y_origin, x_len, y_len)):
+            self.warehouse_matrix[x_origin:x_origin+x_len, y_origin:y_origin+y_len] = UNAVAILABLE_AREA
+            self.unavailable_area_list.append(Block(x_origin, y_origin, x_len, y_len))
+            return True
+        else:
+            return False
     def place_block(self, index, x_origin, y_origin):
         current_block = self.blocks_dict[index]
         #DEBUG

@@ -12,8 +12,11 @@ FILENAME_PERFORMANCE = os.path.join(DIRNAME, '../data/performance.txt')
 
 class EvolutionaryAlgotihm():
     
-    def __init__(self, population_size = 4, iterations_number = 2000, use_crossover = True):
-        self.warehouse = Warehouse(6,6)
+    def __init__(self, population_size = 4, iterations_number = 2000, use_crossover = True, warehouse: Warehouse = None):
+        if(warehouse == None):
+            self.warehouse = Warehouse(8,8)
+        else:
+            self.warehouse = warehouse
         self.warehouse.get_blocks_from_csv(FILENAME_BLOCKS)
         self.population_size = population_size
         self.generate_population()
@@ -50,8 +53,10 @@ class EvolutionaryAlgotihm():
         left_warehouse_matrix = some_warehouse.warehouse_matrix[:,:border]
         right_warehouse_matrix = some_warehouse.warehouse_matrix[:,border:]
 
-        uniq_left = np.unique(left_warehouse_matrix[left_warehouse_matrix!=FREE_CELL_VALUE])
-        uniq_right = np.unique(right_warehouse_matrix[right_warehouse_matrix!=FREE_CELL_VALUE])
+        # uniq_left = np.unique(left_warehouse_matrix[left_warehouse_matrix!=FREE_CELL_VALUE])
+        # uniq_right = np.unique(right_warehouse_matrix[right_warehouse_matrix!=FREE_CELL_VALUE])
+        uniq_left = np.unique(left_warehouse_matrix[left_warehouse_matrix > FREE_CELL_VALUE])
+        uniq_right = np.unique(right_warehouse_matrix[right_warehouse_matrix > FREE_CELL_VALUE])
 
         if (side == "left"):
             for u_r in uniq_right:
@@ -178,6 +183,7 @@ class EvolutionaryAlgotihm():
 
             self.current_population = copy.deepcopy(next_population)
             iteration+= 1
+            print("iterations: %i/%i"%(iteration,self.iterations_number))
 
         # print([self.evaluate_function(x) for x in self.current_population])
         print("-- Largest profit: ", self.largest_profit, " --" )

@@ -4,6 +4,7 @@ import copy
 
 PATH_WIDTH = 1
 FREE_CELL_VALUE = -1
+UNAVAILABLE_AREA = -2
 
 class Evaluator():
     def __init__(self, warehouse: Warehouse = None):
@@ -83,7 +84,7 @@ class Evaluator():
         # queue
         q = []
 
-        if(arr[x_door][y_door] > -1):
+        if(arr[x_door][y_door] > FREE_CELL_VALUE):
             return False
         # insert the top right corner.
         q.append((x_door, y_door))
@@ -108,7 +109,7 @@ class Evaluator():
                 b = p[1] + directions[i][1]
                 
                 # not blocked and valid
-                if(a >= 0 and b >= 0 and a <= goal_x and b <= goal_y and arr[a][b] < 0) :           
+                if(a >= 0 and b >= 0 and a <= goal_x and b <= goal_y and arr[a][b]  == FREE_CELL_VALUE) :           
                     q.append((a, b))
         return False
 
