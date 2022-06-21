@@ -29,7 +29,7 @@ class Warehouse():
     def set_unavailable_area(self, x_origin, y_origin, x_len, y_len) -> bool:
         if(self.is_spot_available(x_origin, y_origin, x_len, y_len)):
             self.warehouse_matrix[x_origin:x_origin+x_len, y_origin:y_origin+y_len] = UNAVAILABLE_AREA
-            self.unavailable_area_list.append(Block(x_origin, y_origin, x_len, y_len))
+            self.unavailable_area_list.append(Block(x_len, y_len, x_origin, y_origin))
             return True
         else:
             return False

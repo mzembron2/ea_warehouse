@@ -20,3 +20,89 @@ Population size: 10, iterations: 1000, crossover: False, blocks num: 9, warehous
 1 15.000000
 4 25.000000
 11 35.000000
+Population size: 20, iterations: 2000, crossover: False, blocks num: 7, warehouse size: 10x10
+1 12.000000
+3 23.000000
+5 24.500000
+6 25.000000
+8 32.000000
+18 33.000000
+Population size: 20, iterations: 2000, crossover: False, blocks num: 7, warehouse size: 7x7
+1 14.000000
+2 17.000000
+5 20.500000
+10 24.000000
+22 25.000000
+32 28.500000
+1016 32.000000
+Population size: 20, iterations: 2000, crossover: False, blocks num: 7, warehouse size: 7x7
+1 13.000000
+2 19.000000
+3 19.500000
+8 20.000000
+10 24.000000
+14 27.000000
+349 28.000000
+622 31.000000
+Population size: 20, iterations: 2000, crossover: False, blocks num: 7, warehouse size: 7x7
+1 12.000000
+2 17.000000
+3 21.000000
+6 24.000000
+11 28.000000
+1123 28.500000
+Population size: 8, iterations: 2000, crossover: True, blocks num: 7, warehouse size: 8x8
+1 8.000000
+2 9.000000
+6 14.000000
+9 16.000000
+10 18.000000
+12 19.000000
+16 21.000000
+35 21.500000
+37 22.000000
+38 24.000000
+85 25.000000
+476 26.500000
+517 27.000000
+Population size: 20, iterations: 2000, crossover: False, blocks num: 7, warehouse size: 7x7
+1 10.000000
+2 18.000000
+73 20.000000
+114 22.500000
+611 23.500000
+640 24.000000
+1586 24.500000
+Population size: 20, iterations: 2000, crossover: False, blocks num: 7, warehouse size: 7x7
+1 12.000000
+3 17.000000
+6 20.500000
+100 21.500000
+147 24.000000
+830 24.500000
+Population size: 20, iterations: 2000, crossover: False, blocks num: 7, warehouse size: 7x7
+1 18.000000
+2 24.000000
+12 25.000000
+36 29.000000
+Population size: 20, iterations: 2000, crossover: False, blocks num: 7, warehouse size: 7x7
+1 9.000000
+2 13.000000
+3 17.500000
+4 21.500000
+24 24.000000
+95 25.000000
+219 27.000000
+478 28.500000
+1911 29.500000
+1937 32.000000
+Population size: 20, iterations: 10, crossover: False, blocks num: 7, warehouse size: 10x10
+1 14.000000
+2 28.000000
+3 31.000000
+Population size: 20, iterations: 2000, crossover: False, blocks num: 7, warehouse size: 10x10
+1 15.000000
+2 23.000000
+3 27.000000
+11 27.500000
+13 33.000000

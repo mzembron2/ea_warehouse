@@ -64,7 +64,6 @@ class Gui():
                 except ValueError:
                     print("Not an int!")
             else:
-                print(parameter.lower())
                 if(str(parameter).lower() == "yes"):
                     self.settings["crossover"] = True
 
@@ -83,11 +82,12 @@ class Gui():
         crossover = self.settings["crossover"]
         st.text("Running with settings: wh size: %ix%i, population size: %i, max iterations: %i, crossover: %s"
             %(wh_x, wh_y, population, iterations, str(crossover)))
-        base_wh = Warehouse(wh_y,wh_x)
-
+        base_wh = Warehouse(wh_y, wh_x)
         for area in self.settings["unavailable"]:
-            base_wh.set_unavailable_area(area[0],area[1], area[2], area[3])
-
+            if(type(area) == list):
+                base_wh.set_unavailable_area(area[0], area[1], area[2], area[3])
+            else:
+                print("Wrong format unavailable area!")
         ea = EvolutionaryAlgotihm(population_size= population,
             iterations_number = iterations, use_crossover = crossover,
             warehouse= base_wh)
