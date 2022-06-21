@@ -8,40 +8,90 @@ import plotly.graph_objects as go
 import copy
 import os
 import random
+import json
 
 DIRNAME = os.path.dirname(__file__)
 FILENAME_BLOCKS = os.path.join(DIRNAME, '../data/blocks.csv')
+FILENAME_SETTINGS = os.path.join(DIRNAME, '../data/settings.json')
 
 class Gui():
     def __init__(self):
         self.color_list = ["Green", "Blue", "Yellow", "RoyalBlue", "LightSkyBlue",
         "aliceblue", "lime", "orange", "purple", "navy", "white", "indigo"  ]
         self.blocks = self.load_data()
+        self.settings = self.load_settings()
 
     def button_callback(self):
         st.text("Available blocks: ")
         self.blocks = self.load_data()
         # (x_origin, y_origin) = self.calculate_origin(self.x_length_input, self.y_length_input)
-        new_element = {
-            'x_origin': 8,
-            'y_origin': 8,
-            'x_length': float(self.x_length_input),
-            'y_length': float(self.y_length_input)
-        }
-        self.blocks = self.blocks.append(new_element, ignore_index=True)
+        try:
+            if(self.x_length_input != "" and self.y_length_input != "" and
+            float(self.x_length_input)>0 and float(self.y_length_input) > 0):
+                new_element = {
+                    'x_origin': 8,
+                    'y_origin': 8,
+                    'x_length': float(self.x_length_input),
+                    'y_length': float(self.y_length_input)
+                }
+                self.blocks = self.blocks.append(new_element, ignore_index=True)
+        except ValueError:
+            print("Not an int!")
         self.prepare_fig()
         self.add_elements_to_plot()
         st.plotly_chart(self.fig)
         self.save_blocks()
 
-    # def calculate_origin(x_len, y_len):
-    #     max_y = self.blocks
-    #     last_element_x = self.blocks[]
+    def button_update_settings_callback(self):
+        self.load_settings()
+        self.update_settings_parameter(self.warehouse_x_input, "warehouse_x")
+        self.update_settings_parameter(self.warehouse_y_input,"warehouse_y")
+        self.update_settings_parameter(self.population_input, "population")
+        self.update_settings_parameter(self.iterations_input, "iterations")
+        self.update_settings_parameter(self.crossover_input, "crossover")
+        self.save_settings_to_json()
+
+
+    def update_settings_parameter(self, parameter, parameter_name):
+        if(parameter != ""):
+            if(parameter_name != "crossover"):
+                try:
+                    int_param = int(parameter)
+                    if(int_param >0):
+                        self.settings[parameter_name] = int_param
+                    else:
+                        print("This parameter cannot be lower than 0!")
+                except ValueError:
+                    print("Not an int!")
+            else:
+                print(parameter.lower())
+                if(str(parameter).lower() == "yes"):
+                    self.settings["crossover"] = True
+
+                elif (str(parameter).lower() == "no"):
+                    self.settings["crossover"] = False
+                
+                else: 
+                    print("Answear to use crossover must be yes or no!")
 
     def ea_button_callback(self):
-        base_wh = Warehouse(8,8)
-        base_wh.set_unavailable_area(4,4,4,4)
-        ea = EvolutionaryAlgotihm(population_size=20, iterations_number=2000, use_crossover=True, warehouse= base_wh)
+        self.load_settings()
+        wh_y = self.settings["warehouse_y"]
+        wh_x = self.settings["warehouse_x"]
+        population = self.settings["population"]
+        iterations = self.settings["iterations"]
+        crossover = self.settings["crossover"]
+        st.text("Running with settings: wh size: %ix%i, population size: %i, max iterations: %i, crossover: %s"
+            %(wh_x, wh_y, population, iterations, str(crossover)))
+        base_wh = Warehouse(wh_y,wh_x)
+
+        for area in self.settings["unavailable"]:
+            base_wh.set_unavailable_area(area[0],area[1], area[2], area[3])
+
+        ea = EvolutionaryAlgotihm(population_size= population,
+            iterations_number = iterations, use_crossover = crossover,
+            warehouse= base_wh)
+
         wh = ea.run()
         self.display_warehouse(wh)
 
@@ -49,6 +99,14 @@ class Gui():
         blocks = pd.read_csv(FILENAME_BLOCKS)
         return blocks 
     
+    def load_settings(self):
+        json_file = open(FILENAME_SETTINGS)
+        self.settings = json.load(json_file)
+    
+    def save_settings_to_json(self):
+        with open(FILENAME_SETTINGS, 'w') as json_file:
+            json.dump(self.settings, json_file)
+
     def display_warehouse(self, warehouse: Warehouse):
         st.text("Optimal warehouse setup: ")
         (rows, cols) = np.shape(warehouse.warehouse_matrix)
@@ -70,10 +128,22 @@ class Gui():
     def prepare_widgets(self):
         st.markdown("# Evolutionary Algorithm")
         self.button = st.button('Run evolution', on_click=self.ea_button_callback)
+
         st.markdown("# Settings section")
+        st.markdown("## Parameters")
+        self.warehouse_x_input = st.text_input("warehouse x length")
+        self.warehouse_y_input = st.text_input("warehouse y length")
+        self.population_input = st.text_input("population size")
+        self.iterations_input = st.text_input("Maximum iterations")
+        self.crossover_input = st.text_input("Use crossover: yes/no")
+        self.button = st.button('Update parameters', on_click=self.button_update_settings_callback)
+        # st.markdown("## Add unavailable area to warehouse")
+        # self.unav_x_length_input = st.text_input("x length")
+        # self.unav_y_length_input = st.text_input("y_length")
+
         st.markdown("## Add block")
-        self.x_length_input = st.text_input("x_length")
-        self.y_length_input = st.text_input("y_length")
+        self.x_length_input = st.text_input("Block x length")
+        self.y_length_input = st.text_input("Block y length")
         self.button = st.button('Insert new block', on_click=self.button_callback)
 
     def add_blocks_to_plot(self, warehouse: Warehouse):
@@ -89,7 +159,8 @@ class Gui():
                     y_len , y1=-(x_origin + x_len),
                 editable = True,
                 line=dict(color="RoyalBlue"),
-                fillcolor=self.color_list[random.randint(0, len(self.color_list)-1)],
+                # fillcolor=self.color_list[random.randint(0, len(self.color_list)-1)],
+                fillcolor="LightSkyBlue"
             )
 
     def add_unavailable_area_to_plot(self, warehouse: Warehouse):
@@ -114,7 +185,8 @@ class Gui():
                     row['y_length'] , y1= -(row['x_origin'] + row['x_length']),
                 line=dict(color="RoyalBlue"),
                 editable = True,
-                fillcolor=self.color_list[random.randint(0, len(self.color_list)-1)],
+                # fillcolor=self.color_list[random.randint(0, len(self.color_list)-1)],
+                fillcolor="LightSkyBlue"
             )
         self.fig.update_shapes(dict(xref='x', yref='y'))
     

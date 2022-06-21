@@ -1,0 +1,22 @@
+Population size: 20, iterations: 300, crossover: False, blocks num: 9, warehouse size: 10x10
+1 13.000000
+2 17.000000
+3 19.000000
+4 24.000000
+5 27.500000
+6 38.500000
+32 39.000000
+138 40.000000
+Population size: 10, iterations: 1000, crossover: False, blocks num: 9, warehouse size: 8x8
+1 17.000000
+4 24.000000
+7 27.000000
+10 30.000000
+12 30.500000
+54 31.000000
+156 32.500000
+269 37.500000
+Population size: 10, iterations: 1000, crossover: False, blocks num: 9, warehouse size: 8x8
+1 15.000000
+4 25.000000
+11 35.000000
