@@ -1,1 +1,3 @@
-# ea_fill_warehouse
+# Evolutionary algorithm
+
+![costam](docs/images/output_warehouse.png.png)

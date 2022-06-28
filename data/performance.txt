@@ -112,3 +112,25 @@ Population size: 8, iterations: 2000, crossover: True, blocks num: 9, warehouse 
 118 19.000000
 124 20.000000
 217 23.000000
+Population size: 8, iterations: 2000, crossover: True, blocks num: 18, warehouse size: 7x6
+1 9.000000
+2 13.000000
+3 17.000000
+10 18.500000
+14 22.500000
+30 23.000000
+73 24.000000
+323 25.000000
+Population size: 8, iterations: 2000, crossover: True, blocks num: 18, warehouse size: 7x7
+1 9.000000
+3 13.000000
+4 16.500000
+6 17.000000
+15 19.500000
+36 20.000000
+56 21.000000
+183 22.000000
+249 25.000000
+629 25.500000
+632 27.000000
+1976 29.000000

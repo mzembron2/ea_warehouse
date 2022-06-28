@@ -14,8 +14,8 @@ FILENAME_SETTINGS = os.path.join(DIRNAME, '../data/settings.json')
 
 class Gui():
     def __init__(self):
-        self.color_list = ["Green", "Blue", "Yellow", "RoyalBlue", "LightSkyBlue",
-        "aliceblue", "lime", "orange", "purple", "navy", "white", "indigo"  ]
+        # self.color_list = ["Green", "Blue", "Yellow", "RoyalBlue", "LightSkyBlue",
+        # "aliceblue", "lime", "orange", "purple", "navy", "white", "indigo"  ]
         self.blocks = self.load_data()
         self.settings = self.load_settings()
 
@@ -74,7 +74,7 @@ class Gui():
                 else: 
                     print("Answear to use crossover must be yes or no!")
 
-    def ea_button_callback(self):
+    def _ea_button_callback(self):
         self.load_settings()
         wh_y = self.settings["warehouse_y"]
         wh_x = self.settings["warehouse_x"]
@@ -128,7 +128,7 @@ class Gui():
     
     def prepare_widgets(self):
         st.markdown("# Evolutionary Algorithm")
-        self.button = st.button('Run evolution', on_click=self.ea_button_callback)
+        self.button = st.button('Run evolution', on_click=self._ea_button_callback)
 
         st.markdown("# Settings section")
         self.load_settings()
