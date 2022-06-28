@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-from scipy import rand
 from block import Block
 import random
 import copy
