@@ -1,1 +1,1 @@
-{"warehouse_x": 6, "warehouse_y": 6, "population": 8, "iterations": 2000, "crossover": true, "unavailable": [[6, 6, 2, 2]]}
+{"warehouse_x": 30, "warehouse_y": 6, "population": 8, "iterations": 2000, "crossover": true, "unavailable": [[6, 6, 2, 2]]}

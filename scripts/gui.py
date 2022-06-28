@@ -27,12 +27,14 @@ class Gui():
             float(self.x_length_input)>0 and float(self.y_length_input) > 0):
 
                 new_element = {
-                    'x_origin': 8,
-                    'y_origin': 8,
-                    'x_length': float(self.x_length_input),
-                    'y_length': float(self.y_length_input)
+                    'x_origin': [8],
+                    'y_origin': [8],
+                    'x_length': [float(self.x_length_input)],
+                    'y_length': [float(self.y_length_input)]
                 }
-                self.blocks = self.blocks.append(new_element, ignore_index=True)
+                # self.blocks = self.blocks.append(new_element, ignore_index=True)
+                self.blocks = pd.concat([self.blocks, pd.DataFrame(data = new_element)],
+                    ignore_index=True)
         except ValueError:
             print("Not an int!")
         self.prepare_fig()
