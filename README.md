@@ -5,7 +5,7 @@ This project provides the implementation of an evolutionary algorithm for optimi
 
 ### Example output for a small warehouse 
 
-![first_example](docs/images/output_warehouse.png)
+![first_example](docs/images/small_output_warehouse.png)
 
 ## Requirements
 
@@ -14,3 +14,9 @@ To run the code, Python 3.x is required, with the following packages:
 * NumPy
 * Pandas
 * Streamlit 
+
+## Interface 
+
+User interface (made with Streamlit) allows you to change algorithm parameters and define new items.  
+
+![first_example](docs/images/settings.png)
