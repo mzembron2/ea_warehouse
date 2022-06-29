@@ -1,6 +1,12 @@
 import numpy as np
 
 class Block():
+    """
+
+    Representation of block - an item that can be stored in a warehouse
+    
+    """
+
     def __init__(self, x_length, y_length, x_origin = None, y_origin = None):
         self.x_origin = x_origin
         self.y_origin =  y_origin

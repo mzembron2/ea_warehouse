@@ -5,13 +5,34 @@ import random
 import copy
 
 FREE_CELL_VALUE = -1
-UNAVAILABLE_AREA = -2
+UNAVAILABLE_AREA_VALUE = -2
 
 class Warehouse():
     def __init__(self, rows, columns):
         """ 
-            warehouse_matrix - representation of warehouse
-            blocks_dict - dictionary containing all available blocks
+            Reperesentation of warehouse 
+
+            warehouse_matrix - 2D array representation of warehouse using block indexies, and 
+            special values defined above:
+
+            * FREE_CELL_VALUE - free space in warehouse - counts as an possible element of path,
+                                block can be placed there, 
+
+            * UNAVAILABLE_AREA - area that is excluded from placing a block
+
+            blocks_dict - dictionary containing all available blocks 
+
+            All available blocks(not only in warehouse) are stored in dictionary - self.blocks_dict
+            which connects the block instance with its index. 
+
+            For convenience indexes of blocks are stored in the following lists 
+            (indicating its placement):
+
+                * self.blocks_in_warehouse
+                * self.blocks_in_waiting_list
+
+            Unavailable areas are treated as blocks (that occupy area, but cannot be moved) and 
+            are stored in self.unavailable_area_list.
         """
         self.warehouse_matrix = np.full((rows, columns), FREE_CELL_VALUE,dtype=int)
         self.blocks_dict = {}
@@ -26,12 +47,14 @@ class Warehouse():
             self.blocks_in_waiting_list.append(index)
 
     def set_unavailable_area(self, x_origin, y_origin, x_len, y_len) -> bool:
+
         if(self.is_spot_available(x_origin, y_origin, x_len, y_len)):
-            self.warehouse_matrix[x_origin:x_origin+x_len, y_origin:y_origin+y_len] = UNAVAILABLE_AREA
+            self.warehouse_matrix[x_origin:x_origin+x_len, y_origin:y_origin+y_len] = UNAVAILABLE_AREA_VALUE
             self.unavailable_area_list.append(Block(x_len, y_len, x_origin, y_origin))
             return True
         else:
             return False
+
     def place_block(self, index, x_origin, y_origin):
         current_block = self.blocks_dict[index]
         self.warehouse_matrix[x_origin:x_origin + current_block.x_length,

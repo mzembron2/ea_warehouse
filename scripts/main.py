@@ -1,10 +1,12 @@
 from re import X
 import pandas as pd
 import streamlit as st
-# import plotly.express as px
-import plotly.graph_objects as go
 from gui import Gui
 
+"""
+    The main file of the application - to run it, just type in
+    scripts directory: `streamlit run main.py`
+"""
 
 st.config.dataFrameSerialization = "arrow"
 if __name__ == "__main__":

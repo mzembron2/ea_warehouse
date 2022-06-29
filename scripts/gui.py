@@ -1,6 +1,6 @@
 from warehouse import Warehouse
 from block import Block
-from evolutionary_algorithm import EvolutionaryAlgotihm
+from evolutionary_algorithm import EvolutionaryAlgorithm
 import pandas as pd
 import numpy as np
 import streamlit as st
@@ -13,9 +13,15 @@ FILENAME_BLOCKS = os.path.join(DIRNAME, '../data/blocks.csv')
 FILENAME_SETTINGS = os.path.join(DIRNAME, '../data/settings.json')
 
 class Gui():
+
+    """
+        Simple GUI made with Streamlit python library.
+
+        Allows the user to change algorithm parameters, add blocks, and
+        most importantly,  running the algorithm and viewing the solution.
+
+    """
     def __init__(self):
-        # self.color_list = ["Green", "Blue", "Yellow", "RoyalBlue", "LightSkyBlue",
-        # "aliceblue", "lime", "orange", "purple", "navy", "white", "indigo"  ]
         self.blocks = self.load_data()
         self.settings = self.load_settings()
 
@@ -32,7 +38,6 @@ class Gui():
                     'x_length': [float(self.x_length_input)],
                     'y_length': [float(self.y_length_input)]
                 }
-                # self.blocks = self.blocks.append(new_element, ignore_index=True)
                 self.blocks = pd.concat([self.blocks, pd.DataFrame(data = new_element)],
                     ignore_index=True)
         except ValueError:
@@ -89,7 +94,7 @@ class Gui():
                 base_wh.set_unavailable_area(area[0], area[1], area[2], area[3])
             else:
                 print("Wrong format unavailable area!")
-        ea = EvolutionaryAlgotihm(population_size= population,
+        ea = EvolutionaryAlgorithm(population_size= population,
             iterations_number = iterations, use_crossover = crossover,
             warehouse= base_wh, p_c = 0.5)
 
@@ -151,9 +156,6 @@ class Gui():
         self.crossover_input = st.text_input("Use crossover: yes/no (current: %s)"%
         crossover_yes_no)
         self.button = st.button('Update parameters', on_click=self.button_update_settings_callback)
-        # st.markdown("## Add unavailable area to warehouse")
-        # self.unav_x_length_input = st.text_input("x length")
-        # self.unav_y_length_input = st.text_input("y_length")
 
         st.markdown("## Add block")
         self.x_length_input = st.text_input("Block x length")

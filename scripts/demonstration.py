@@ -1,7 +1,6 @@
 from warehouse import Warehouse
 from evaluator import Evaluator
-from evolutionary_algorithm import EvolutionaryAlgotihm
-from brutforce_algortihm import Bruteforce
+from evolutionary_algorithm import EvolutionaryAlgorithm
 import numpy as np
 import os
 
@@ -47,7 +46,7 @@ if(__name__ == "__main__"):
     # print(wh.warehouse_matrix)
 
     """ demonstration of ea"""
-    ea = EvolutionaryAlgotihm()
+    ea = EvolutionaryAlgorithm()
 
     ## crossover
     # ea.mutation(0)
@@ -64,17 +63,12 @@ if(__name__ == "__main__"):
     wh2 = ea.current_population[1]
     print(wh1.warehouse_matrix)
     print(wh2.warehouse_matrix)
-    print(ea.crossover(wh1,wh2).warehouse_matrix)
+    print(ea._crossover(wh1,wh2).warehouse_matrix)
 
 
-    ea.tournament_selection(2)
+    ea._tournament_selection(2)
     # ea.run()
     
-
-
-    bf = Bruteforce()
-    bf.solve()
-    bf.show()
 
 
     """ demonstartion of evaluator """
