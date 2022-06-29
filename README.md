@@ -15,6 +15,10 @@ To run the code, Python 3.x is required, with the following packages:
 * Pandas
 * Streamlit 
 
+## Running applicaion 
+
+To run the application, just type: `streamlit run main.py` in the scripts directory.
+
 ## Interface 
 
 User interface (made with Streamlit) allows you to change algorithm parameters and define new items.  
